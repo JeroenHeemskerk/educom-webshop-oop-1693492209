@@ -12,7 +12,7 @@ class BasicDoc extends HtmlDoc {
         echo '<title>'; echo $this -> data["page"]; echo '</title>';
     }
     private function showCSSLink(){?>
-        <link rel="stylesheet" href="CSS/stylesheet.css">
+        <link rel="stylesheet" href="../CSS/stylesheet.css">
         <?php
     }
     protected function showHeader(){
