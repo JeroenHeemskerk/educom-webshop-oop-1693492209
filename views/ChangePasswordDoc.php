@@ -1,7 +1,10 @@
 <?php
-include_once "../views/FormsDoc.php";
+include_once "views/FormsDoc.php";
 
 class ChangePasswordDoc extends FormsDoc {
+    protected function showHeader(){
+        echo "Change Password";
+    }
     protected function showFormContent(){echo '
         <div>
             <label class="form" for="oldpassword">oud wachtwoord:</label>

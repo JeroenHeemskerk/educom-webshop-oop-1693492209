@@ -1,8 +1,10 @@
 <?php
-include_once "../views/FormsDoc.php";
+include_once "views/FormsDoc.php";
 
 class ContactDoc extends FormsDoc {
-    
+    protected function showHeader(){
+        echo "Contact";
+    }
     protected function showFormContent(){
         $this -> showFirstPart();
         $this -> showFormField("Firstname","Voornaam:");
@@ -22,15 +24,6 @@ class ContactDoc extends FormsDoc {
                 </select>';
                 echo '<span class="error"></span>';
                 echo '
-        </div>';
-    }
-    private function showFormField($for, $label){echo '
-        <div>
-            <label class="form" for=' . $for . '>' . $label . '</label>
-            <input class="input" type="text" id=' . $for . ' name=' . $for. ' 
-            value="">';
-            echo '<span class="error"></span>';
-            echo '
         </div>';
     }
     private function showLastPart(){

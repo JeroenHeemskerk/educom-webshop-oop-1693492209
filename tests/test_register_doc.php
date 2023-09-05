@@ -1,7 +1,7 @@
 <?php
   include_once "../views/RegisterDoc.php";
 
-$data = array ('page' => 'register', 'header' => 'Register');
+$data = array ('page' => 'register');
 $view = new RegisterDoc($data);
 $view  -> show();
 

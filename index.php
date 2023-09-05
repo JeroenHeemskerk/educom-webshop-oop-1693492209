@@ -123,10 +123,49 @@ function GetRequestedPage(){
 }
 
 function ShowResponsePage($data){
-    BeginDocument();
-    ShowHeadSection();
-    ShowBodySection($data);
-    EndDocument();
+    switch($data['page']){
+        case 'about':
+            require_once('views/AboutDoc.php');
+            $view = new AboutDoc($data);
+            break;
+        case 'changepassword':
+            require_once('views/ChangePasswordDoc.php');
+            $view = new ChangePasswordDoc($data);
+            break;
+        case 'contact':
+            require_once('views/ContactDoc.php');
+            $view = new ContactDoc($data);
+            break;
+        case 'home':
+            require_once('views/HomeDoc.php');
+            $view = new HomeDoc($data);
+            break;
+        case 'login':
+            require_once('views/LoginDoc.php');
+            $view = new LoginDoc($data);
+            break;
+        case 'register':
+            require_once('views/RegisterDoc.php');
+            $view = new RegisterDoc($data);
+            break;
+        case 'shoppingcart':
+            require_once('views/ShoppingcartDoc.php');
+            $view = new ShoppingcartDoc($data);
+            break;
+        case 'top5':
+            require_once('views/Top5Doc.php');
+            $view = new Top5Doc($data);
+            break;
+        case 'webshop':
+            require_once('views/WebshopDoc.php');
+            $view = new WebshopDoc($data);
+            break;
+        case 'webshopitem':
+            require_once('views/WebshopItemDoc.php');
+            $view = new WebshopItemDoc($data);
+            break;
+    }
+    $view->show();
 }
 
 function GetArrayVar($array, $key, $default=''){

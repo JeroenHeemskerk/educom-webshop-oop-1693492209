@@ -1,8 +1,8 @@
 <?php
   include_once "../views/BasicDoc.php";
 
-  $data = array ( 'page' => 'basic', 'header' => 'Basic' /* other fields */ );
+$data = array ( 'page' => 'basic');
+$view = new BasicDoc($data);
+$view  -> show($data);
 
-  $view = new BasicDoc($data);
-  $view  -> show($data);
 ?>

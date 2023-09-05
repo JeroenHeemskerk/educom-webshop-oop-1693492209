@@ -1,7 +1,10 @@
 <?php
-include_once "../views/FormsDoc.php";
+include_once "views/FormsDoc.php";
 
 class RegisterDoc extends FormsDoc {
+    protected function showHeader(){
+        echo "Register";
+    }
     protected function showFormContent(){
         $this -> showFormField("name", "Naam:");
         $this -> showFormField("email", "Email:");

@@ -1,5 +1,5 @@
 <?php
-include_once "../views/HtmlDoc.php";
+include_once "views/HtmlDoc.php";
 
 class BasicDoc extends HtmlDoc {
     protected $data;
@@ -11,12 +11,11 @@ class BasicDoc extends HtmlDoc {
     private function showTitle(){
         echo '<title>'; echo $this -> data["page"]; echo '</title>';
     }
-    private function showCSSLink(){?>
-        <link rel="stylesheet" href="../CSS/stylesheet.css">
-        <?php
+    private function showCSSLink(){
+        echo '<link rel="stylesheet" href="CSS/stylesheet.css">';
     }
     protected function showHeader(){
-       echo '<h1>'; echo $this -> data["header"]; echo '</h1>';
+       echo 'basic';
     }
     private function showMenu(){
         ?>
@@ -47,7 +46,9 @@ class BasicDoc extends HtmlDoc {
     }
 
     protected function showBodyContent(){
+        echo '<h1>';
         $this -> showHeader();
+        echo '</h1>';
         $this -> showMenu();
         $this -> showContent();
         $this -> showFooter();
