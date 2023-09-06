@@ -2,14 +2,19 @@
 include_once "views/HtmlDoc.php";
 
 class BasicDoc extends HtmlDoc {
-    protected $data;
+    // protected $data;
 
-    public function __construct($myData){
-        $this -> data = $myData;
-    }
+    // public function __construct($myData){
+    //     $this -> data = $myData;
+    // }
 
     private function showTitle(){
-        echo '<title>'; echo $this -> data["page"]; echo '</title>';
+        echo '<title>'; 
+        $this -> showTitleName();
+        echo '</title>';
+    }
+    protected function showTitleName(){
+        echo 'basic';
     }
     private function showCSSLink(){
         echo '<link rel="stylesheet" href="CSS/stylesheet.css">';

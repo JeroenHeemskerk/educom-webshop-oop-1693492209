@@ -1,0 +1,38 @@
+<?php
+include_once 'models/page-model-class';
+
+class PageController{
+    private $pagemodel;
+    public function __construct() {
+        $this -> pagemodel = new PageModel(NULL);
+    }
+    public function HandleRequests(){
+        $this -> GetRequest();
+        $this -> ProcessRequest();
+        $this -> ShowResponse();
+    }
+    private function GetRequest(){
+        $this -> pagemodel -> GetRequestedPage();
+    }
+    private function ProcessRequest(){
+        switch ($this -> pagemodel -> page){
+            case 'login':
+                break;
+        }
+    }
+
+    private function ShowResponse(){
+        //$this -> model -> createMenu(); 
+        switch ($this -> pagemodel -> page){
+            case 'home':
+                require_once('views/HomeDoc.php');
+                $view = new HomeDoc($this -> pagemodel);
+                break;
+            case 'about':
+                require_once('views/AboutDoc.php');
+                $view = new AboutDoc($this -> pagemodel);
+                break;
+        }
+        $view -> show();
+    }
+}

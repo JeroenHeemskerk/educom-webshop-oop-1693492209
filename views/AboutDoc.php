@@ -2,6 +2,9 @@
 include_once "views/BasicDoc.php";
 
 class AboutDoc extends BasicDoc {
+    protected function showTitleName(){
+        echo 'about';
+    }
     protected function showHeader(){
         echo "About";
     }

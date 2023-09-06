@@ -1,0 +1,54 @@
+<?php
+class PageModel{
+    public $page;
+    public $newpage;
+    public $menu;
+    public $errors = array();
+    public $genericErr = "";
+    protected $isPost;
+    protected $sessionManager;
+
+    public function __construct($copy){
+        if(empty($copy)){
+
+        }else {
+            $this -> page = $copy -> page;
+            $this -> newpage = $copy -> newpage;
+            $this -> isPost = $copy -> isPost;
+            $this -> menu = $copy -> menu;
+            $this -> genericErr = $copy -> genericErr;
+        }
+    }
+    public function GetRequestedPage(){
+        $this -> isPost = ($_SERVER['REQUEST_METHOD'] =='POST'); 
+        if ($this -> isPost){
+            $this -> setPage(Utill::GetPostVar('page','home')); 
+        }else{
+            $this -> setPage('home');
+            $this -> setPage($this -> GetUrlVar('page','home'));  
+        } 
+    }
+    function GetArrayVar($array, $key, $default=''){
+        return $this -> newpage = $array[$key];
+    }
+
+    function GetPostVar($key, $default=''){
+        return $this -> GetArrayVar($_POST, $key, $default);
+    }
+
+    function GetUrlVar($key, $default=''){
+        return $this -> GetArrayVar($_GET, $key, $default);
+    }
+    // protected function GetArrayVar($array, $key, $default=''){
+    //     $this -> isset($array[$key]) ? $array[$key] : $default;
+    // }
+    // protected function GetPostVar($key, $default=''){
+    //     $this -> GetArrayVar($_POST, $key, $default);
+    // }
+    // protected function GetUrlVar($key, $default=''){
+    //     $this -> newpage = $key;
+    // }
+    protected function setPage($newpage){
+        $this -> page = $newpage;
+    }
+}
