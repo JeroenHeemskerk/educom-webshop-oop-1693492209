@@ -10,17 +10,17 @@ abstract class FormsDoc extends BasicDoc {
     }
     private function showFormStart(){
         ?>
-        <form action="index.php" method="post" name=<?php echo $this -> data["page"];?>>
+        <form action="index.php" method="post" name=<?php echo $this -> model -> page; ?>>
         <?php
     }
     private function showFormInput(){
         ?>
         <div>
-            <input type="hidden" name="page" value=<?php echo $this -> data["page"];?>>
+            <input type="hidden" name="page" value=<?php echo $this -> model -> page; ?>>
         </div>
         <?php
     }
-
+    protected function showFormPage(){}
     protected function showFormContent(){}
 
     private function showFormSubmit(){
@@ -31,11 +31,11 @@ abstract class FormsDoc extends BasicDoc {
         <?php
     }
 
-    protected function showFormField($for, $label){echo '
+    protected function showFormField($for, $label, $error, $value){echo '
         <div>
             <label class="form" for=' . $for . '>' . $label . '</label>
             <input class="input" type="text" id=' . $for . ' name=' . $for . ' 
-            value=""><span class="error"></span>
+            value="' . $value . '"><span class="error">' . $error . '</span>
         </div>';
     }
 }

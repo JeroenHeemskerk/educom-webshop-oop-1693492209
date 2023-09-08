@@ -1,0 +1,43 @@
+<?php
+class sessionManager{
+    public function LogInUserSession($name, $userId) {
+        $_SESSION['name'] = $name;
+        $_SESSION['userId'] = $userId;
+    }
+    public function LogoutUserSession() {
+        session_unset();
+        session_destroy();
+    }
+    public function IsUserLogIn() {
+        if(!empty($_SESSION['name'])){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public function getLogInUsername() {
+        return $_SESSION['name'];
+    }
+    public function getLogInUserId() {
+        return $_SESSION['userId'];
+    }
+    public function AddProductToCart($ProductId) {
+        if(array_key_exists($ProductId, getCart())){
+            $_SESSION['cart'][$ProductId] += 1;
+        } else {
+            $_SESSION['cart'][$ProductId] = 1;
+        }
+    }
+    public function RemoveProductFromCart($ProductId) {
+        $_SESSION['cart'][$ProductId] -= 1;
+    }
+    public function CleanCart() {
+        unset($_SESSION["cart"]);
+    }
+    public function getCart(){
+        if(!isset($_SESSION['cart'])){
+            $_SESSION['cart'] = array();
+        }
+        return $_SESSION['cart'];
+    }
+}

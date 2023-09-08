@@ -2,37 +2,35 @@
 include_once "views/HtmlDoc.php";
 
 class BasicDoc extends HtmlDoc {
-    // protected $data;
+    protected $model;
 
-    // public function __construct($myData){
-    //     $this -> data = $myData;
-    // }
-
+    public function __construct($model){
+        $this -> model = $model;
+    }
+    
     private function showTitle(){
         echo '<title>'; 
         $this -> showTitleName();
         echo '</title>';
     }
-    protected function showTitleName(){
-        echo 'basic';
-    }
+    protected function showTitleName(){}
+    protected function showHeader(){}
+
     private function showCSSLink(){
         echo '<link rel="stylesheet" href="CSS/stylesheet.css">';
-    }
-    protected function showHeader(){
-       echo 'basic';
     }
     private function showMenu(){
         ?>
         <ul class="menu">
-            <li class="menuitem"><a href="index.php?page=home">Home</a></li>
+            <?php $this -> model -> createMenu(); ?>
+            <!-- <li class="menuitem"><a href="index.php?page=home">Home</a></li>
             <li class="menuitem"><a href="index.php?page=about">About</a></li>
             <li class="menuitem"><a href="index.php?page=contact">Contact</a></li>
             <li class="menuitem"><a href="index.php?page=webshop">Webshop</a></li>
             <li class="menuitem"><a href="index.php?page=top5">Top 5</a></li>
             <li class="menuitem"><a href="index.php?page=changepassword">Verander wachtwoord</a></li>
             <li class="menuitem"><a href="index.php?page=shoppingcart">Shoppingcart</a></li>
-            <li class="menuitem"><a href="index.php?page=logout">Logout s</a></li>
+            <li class="menuitem"><a href="index.php?page=login">Login</a></li> -->
         </ul>
         <?php
     }

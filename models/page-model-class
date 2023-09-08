@@ -1,4 +1,5 @@
 <?php
+include_once "sessionManager";
 class PageModel{
     public $page;
     public $newpage;
@@ -10,8 +11,9 @@ class PageModel{
 
     public function __construct($copy){
         if(empty($copy)){
-
+            $this -> sessionManager = new sessionManager();
         }else {
+            $this -> sessionManager = new sessionManager();
             $this -> page = $copy -> page;
             $this -> newpage = $copy -> newpage;
             $this -> isPost = $copy -> isPost;
@@ -22,33 +24,41 @@ class PageModel{
     public function GetRequestedPage(){
         $this -> isPost = ($_SERVER['REQUEST_METHOD'] =='POST'); 
         if ($this -> isPost){
-            $this -> setPage(Utill::GetPostVar('page','home')); 
+            $this -> setPage($this -> GetPostVar('page','home')); 
         }else{
-            $this -> setPage('home');
             $this -> setPage($this -> GetUrlVar('page','home'));  
         } 
     }
-    function GetArrayVar($array, $key, $default=''){
-        return $this -> newpage = $array[$key];
+    public function GetArrayVar($array, $key, $default=''){
+        return isset($array[$key]) ? $array[$key] : $default;
     }
 
-    function GetPostVar($key, $default=''){
+    public function GetPostVar($key, $default=''){
         return $this -> GetArrayVar($_POST, $key, $default);
     }
 
-    function GetUrlVar($key, $default=''){
+    public function GetUrlVar($key, $default=''){
         return $this -> GetArrayVar($_GET, $key, $default);
     }
-    // protected function GetArrayVar($array, $key, $default=''){
-    //     $this -> isset($array[$key]) ? $array[$key] : $default;
-    // }
-    // protected function GetPostVar($key, $default=''){
-    //     $this -> GetArrayVar($_POST, $key, $default);
-    // }
-    // protected function GetUrlVar($key, $default=''){
-    //     $this -> newpage = $key;
-    // }
-    protected function setPage($newpage){
+    public function setPage($newpage){
         $this -> page = $newpage;
+    }
+    public function createMenu(){
+        $this -> menu['home'] = $this -> Menuitem('home', 'Home');
+        $this -> menu['about'] = $this -> Menuitem('about', 'About');
+        $this -> menu['contact'] = $this -> Menuitem('contact', 'Contact');
+        $this -> menu['webshop'] = $this -> Menuitem('webshop', 'Webshop');
+        $this -> menu['top5'] = $this -> Menuitem('top5', 'Top5');
+        if ($this -> sessionManager -> IsUserLogIn()){
+            $this -> menu['shoppingcart'] = $this -> Menuitem('shoppingcart', 'Shoppingcart');
+            $this -> menu['changepassword'] = $this -> Menuitem('changepassword', 'ChangePassword');
+            $this -> menu['logout'] = $this -> Menuitem('logout', 'Logout', $this -> sessionManager -> getLogInUsername());
+        } else {
+            $this -> menu['register'] = $this -> Menuitem('register', 'Register');
+            $this -> menu['login'] = $this -> Menuitem('login', 'Login');
+        }
+    }
+    public function Menuitem($name, $message, $username = ''){
+        echo'<li class="menuitem"><a href="index.php?page=';echo $name; echo'">';echo $message, $username; echo'</a></li>';
     }
 }
