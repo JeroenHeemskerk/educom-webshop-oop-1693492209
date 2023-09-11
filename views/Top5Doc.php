@@ -5,12 +5,16 @@ class Top5Doc extends ProductDoc {
     protected function showHeader(){
         echo "Top5";
     }
-    protected function showContent(){echo '
-        <p>Welkom bij de 5 best verkochte items alle tijden</p>
-        <div class="Product">
-            <p>plek ';echo $this -> data['place']; echo' best verkochte product deze week</p>
-            <p>naam: ';echo $this -> data['name']; echo'</p>
-            <a href="index.php?page=webshopitem&row="><img src="';echo $this -> data["filename"]; echo '" width="50%" height="50%"></a></p>
-        </div>';
+    protected function showContent(){$i = 1;
+        foreach ($this -> model -> carts as $cart) {
+            $Product = $this -> model -> GetProductById($cart["productid"]); echo '
+            <p>Welkom bij de 5 best verkochte items alle tijden</p>
+            <div class="Product">
+            <p>plek '; echo $i; echo ' best verkochte product deze week</p>
+            <p>naam: ';echo $Product["name"]; echo '</p>
+            <a href="index.php?page=webshopitem&row=';echo $Product["id"]; echo'"><img src="';echo $Product["filename"]; echo '" width="50%" height="50%"></a>
+            </div>';
+            $i++;
+        }
     }
 }

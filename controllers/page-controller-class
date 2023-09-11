@@ -1,9 +1,15 @@
 <?php
 include_once 'models/page-model-class';
 include_once 'models/user-model-class';
+include_once 'models/shop-model-class';
 
 class PageController{
     private $model;
+    public $product;
+    public $products;
+    public $carts;
+    public $total;
+    public $cartLines; 
 
     public function __construct() {
         $this -> model = new Pagemodel(NULL);
@@ -18,6 +24,49 @@ class PageController{
     }
     private function ProcessRequest(){
         switch ($this -> model -> page){
+            case 'shoppingcart':
+                $this -> model = new ShopModel($this -> model);
+                $this -> model -> handleActions();
+                $this -> carts = $this -> model -> requestCart();
+                foreach ($this -> carts as $key => $quantity) {
+                    $product = $this -> model -> GetProductById($key); 
+                    $this -> cartLine = array("id" => $product["id"], "name" => $product["name"], "quantity" => $quantity, "price" => $product["price"], "description" => $product["description"], "filename" => $product["filename"], 'subTotal' => ($quantity * $product['price']));
+                    $this -> model -> cartLines[] = $this -> cartLine;
+                    $this -> model -> total += $this -> cartLine['subTotal'];
+                }
+                break;
+            case 'top5':
+                $this -> model = new ShopModel($this -> model);
+                try {
+                    $this -> carts = $this -> model -> GetTop5Products();
+                } 
+                catch (Exception $e) {
+                    $this -> model -> genericErr = "Kan de top 5 producten niet ophalen, probeer het later nogmaals";
+                    echo("Error collecting carts: " . $e -> getMessage());
+                }
+                break;
+            case 'webshop':
+                $this -> model = new ShopModel($this -> model);
+                try {
+                    $this -> products = $this -> model -> GetAllProducts();
+                } 
+                catch (Exception $e) {
+                    $this -> model -> genericErr = "Kan de producten niet ophalen, probeer het later nogmaals";
+                    LogDebug("Error collecting products: " . $e -> getMessage());
+                }
+                $this -> model -> handleActions();
+                break;
+            case 'webshopitem':
+                $this -> model = new ShopModel($this -> model);
+                try {
+                    $productId = $this -> model -> GetUrlVar("row"); 
+                    $this -> product = $this ->  model -> GetProductById($productId); 
+                } 
+                catch (Exception $e) {
+                    $this -> model -> genericErr = "Kan dit product niet ophalen, probeer het later nogmaals";
+                    LogDebug("Error collecting product with id " . $row . ": " . $e -> getMessage());
+                }
+                break;
             case 'contact':
                 $this -> model = new UserModel($this -> model);
                 $this -> model -> ValidateContact();
@@ -42,7 +91,6 @@ class PageController{
                 $this -> model = new UserModel($this -> model);
                 $this -> model -> validateLogin();
                 if($this -> model -> loginvalid){
-                    //$this -> model -> authenticateUser();
                     $this -> model -> LoginUser();
                     $this -> model -> setPage("home");
                 } 

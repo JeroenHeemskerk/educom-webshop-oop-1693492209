@@ -1,0 +1,107 @@
+<?php
+class ShopModel extends PageModel{
+    public function GetAllProducts(){
+        $conn = $this -> ConnectDB();
+        try {
+            $sql = "SELECT * FROM products";
+            $result = mysqli_query($conn, $sql);
+            if (!$result) {
+                throw new Exception("geen producten gevonden, SQL: " . $sql . ", Error " . $conn->error());
+            }
+            $products = array();
+            while($row = mysqli_fetch_assoc($result)) {
+                $products[$row["id"]] = $row;
+            }
+            $this -> products = $products;
+            return $products;
+        } finally {
+        mysqli_close($conn);
+        }
+    }
+    public function GetProductById($productId){
+        $conn = $this -> ConnectDB();
+        try {
+            $productId = $conn->real_escape_string($productId);
+            $sql = "SELECT * FROM products WHERE id ='$productId'";
+            $result = mysqli_query($conn, $sql);
+            if (!$result) {
+                throw new Exception("geen product gevonden, SQL: " . $sql . ", Error " . $conn->error());
+            }
+            $product = "";
+            while($row = mysqli_fetch_assoc($result)) {
+                $product = array("id" => $row["id"], "name" => $row["name"], "description" => $row["description"], 
+                "price" => $row["price"], "filename" => $row["filename"]);
+            }
+            $this -> product = $product;
+            return $product;
+        } finally {
+        mysqli_close($conn);
+        }
+    }
+    public function GetTop5Products(){
+        $conn = $this -> ConnectDB();
+        try {
+            $sql = "SELECT id, productid, COUNT(productid) FROM shoppingcart 
+             GROUP BY productid ORDER BY COUNT(productid) DESC LIMIT 5";
+            $result = mysqli_query($conn, $sql);
+            if (!$result) {
+                throw new Exception("geen producten gevonden, SQL: " . $sql . ", Error " . $conn->error());
+            }
+            $carts = array();
+            while($row = mysqli_fetch_assoc($result)) {
+                $carts[$row["id"]] = $row;
+            }
+            $this -> carts = $carts;
+            return $carts;
+        } finally {
+        mysqli_close($conn);
+        }
+    }
+    public function SaveOrder($userId, $productId){
+        $conn = $this -> ConnectDB();
+        try {
+            $userId = $conn->real_escape_string($userId);
+            $productId = $conn->real_escape_string($productId);
+            $sql = "INSERT INTO shoppingcart (userid, productid) VALUES ('$userId','$productId')";
+            if (mysqli_query($conn, $sql) === FALSE) {
+                throw new Exception("Het is niet gelukt om het in het database te zetten");
+            }
+        } finally {    
+        mysqli_close($conn);
+        }
+    }
+    public function requestCart(){
+        $this -> total = 0;
+        $this -> cartLines = array();
+        $cart = $this -> sessionManager -> getCart();
+        $this -> carts = $cart;
+        return $cart;
+    }
+    public function handleActions(){
+        $action = $this -> GetPostVar("action");
+            switch($action){
+                case "AddProductToCart":
+                    $productId = $this -> GetPostVar("productid");
+                    $this -> sessionManager -> AddProductToCart($productId);
+                    break;
+                case "RemoveProductFromCart":
+                    $productId = $this -> GetPostVar("productid");
+                    $this -> sessionManager -> RemoveProductFromCart($productId);
+                    break;
+                case "AddProductToDatabase":
+                    $this -> AddProductToDatabase();
+                    break;
+            }
+    }
+    private function AddProductToDatabase(){
+        $userId = $this -> sessionManager -> getLogInUserId();
+        $products = $this -> sessionManager -> getCart();
+        $productsId = array_keys($products);
+            foreach($productsId as $productId){
+                for($i=0; $i < $products[$productId]; $i++){
+                    $this -> SaveOrder($userId, $productId);
+                }
+            }
+        $this -> sessionManager -> CleanCart();
+    }
+}

@@ -21,6 +21,18 @@ class PageModel{
             $this -> genericErr = $copy -> genericErr;
         }
     }
+    public function ConnectDB(){
+        $servername = "localhost";
+        $username = "stijn_webshop_educom";
+        //super goed wachtwoord ik weet
+        $sqlpassword = "Stijnstijn12";
+        $dbname = "stijn_webshop";
+        $conn = mysqli_connect($servername, $username, $sqlpassword, $dbname);
+        if (!$conn) {
+            throw new Exception("Er is geen verbinden gevonden met het database");
+        }
+        return $conn;
+    }
     public function GetRequestedPage(){
         $this -> isPost = ($_SERVER['REQUEST_METHOD'] =='POST'); 
         if ($this -> isPost){

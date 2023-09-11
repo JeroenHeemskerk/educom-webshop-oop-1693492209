@@ -22,7 +22,7 @@ class sessionManager{
         return $_SESSION['userId'];
     }
     public function AddProductToCart($ProductId) {
-        if(array_key_exists($ProductId, getCart())){
+        if(array_key_exists($ProductId, $this -> getCart())){
             $_SESSION['cart'][$ProductId] += 1;
         } else {
             $_SESSION['cart'][$ProductId] = 1;
