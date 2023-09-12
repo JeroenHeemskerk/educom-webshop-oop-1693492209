@@ -2,43 +2,43 @@
 
 class HtmlDoc {
     private function showHTMLStart(){
-        ?>
+        echo '
         <!DOCTYPE html>
         <html lang="en">
-        <?php 
+        ';
     }
     private function showHeadStart(){
-        ?>
+        echo '
         <head>
-        <?php 
+        ';
     }
     protected function showHeadContent(){
-        ?>
+        echo '
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
-        <?php 
+        ';
     }
     private function showHeadEnd(){
-        ?>
+        echo '
         </head>
-        <?php
+        ';
     }
     private function showbodyStart(){
-        ?>
+        echo '
         <body>
-        <?php 
+        ';
     }
     protected function showBodyContent(){}
     private function showbodyEnd(){
-        ?>
+        echo '
         </body>
-        <?php 
+        ';
     }
     private function showHTMLEnd(){
-        ?>
+        echo '
         </html>
-        <?php 
+        ';
     }
     public function show(){
         $this -> showHTMLStart();

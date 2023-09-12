@@ -20,27 +20,19 @@ class BasicDoc extends HtmlDoc {
         echo '<link rel="stylesheet" href="CSS/stylesheet.css">';
     }
     private function showMenu(){
-        ?>
-        <ul class="menu">
-            <?php $this -> model -> createMenu(); ?>
-            <!-- <li class="menuitem"><a href="index.php?page=home">Home</a></li>
-            <li class="menuitem"><a href="index.php?page=about">About</a></li>
-            <li class="menuitem"><a href="index.php?page=contact">Contact</a></li>
-            <li class="menuitem"><a href="index.php?page=webshop">Webshop</a></li>
-            <li class="menuitem"><a href="index.php?page=top5">Top 5</a></li>
-            <li class="menuitem"><a href="index.php?page=changepassword">Verander wachtwoord</a></li>
-            <li class="menuitem"><a href="index.php?page=shoppingcart">Shoppingcart</a></li>
-            <li class="menuitem"><a href="index.php?page=login">Login</a></li> -->
-        </ul>
-        <?php
+        echo '
+        <ul class="menu">'; 
+            $this -> model -> createMenu(); 
+        echo '</ul>
+        ';
     }
     protected function showContent(){echo "test";}
     private function showFooter(){
-        ?>
+        echo '
         <footer>
             <p>Copyright &copy; 2023 Stijn Engelmoer</p>
         </footer>
-        <?php
+        ';
     }
 
     protected function showHeadContent(){

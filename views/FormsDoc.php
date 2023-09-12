@@ -9,26 +9,26 @@ abstract class FormsDoc extends BasicDoc {
         $this -> showFormSubmit();
     }
     private function showFormStart(){
-        ?>
-        <form action="index.php" method="post" name=<?php echo $this -> model -> page; ?>>
-        <?php
+        echo '
+        <form action="index.php" method="post" name=' . $this -> model -> page . ';>
+        ';
     }
     private function showFormInput(){
-        ?>
+        echo '
         <div>
-            <input type="hidden" name="page" value=<?php echo $this -> model -> page; ?>>
+            <input type="hidden" name="page" value=' . $this -> model -> page . '>
         </div>
-        <?php
+        ';
     }
     protected function showFormPage(){}
     protected function showFormContent(){}
 
     private function showFormSubmit(){
-        ?>
+        echo '
         <div>
             <input type="submit" value="verstuur">
         </div>
-        <?php
+        ';
     }
 
     protected function showFormField($for, $label, $error, $value){echo '
