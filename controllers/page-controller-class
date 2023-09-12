@@ -100,6 +100,14 @@ class PageController{
                 $this -> model -> LogoutUser();
                 $this -> model -> setPage("home");
                 break;
+            case 'addproduct':
+                $this -> model = new ShopModel($this -> model);
+                $this -> model -> validateProduct();
+                if($this -> model -> productvalid){
+                    $this -> model -> SaveProduct();
+                    $this -> model -> setPage("home");
+                } 
+                break;
         }
     }
     public function Menu(){
@@ -147,6 +155,10 @@ class PageController{
             case 'login':
                 require_once('views/LoginDoc.php');
                 $view = new LoginDoc($this -> model);
+                break;
+            case 'addproduct':
+                require_once('views/AddProductDoc.php');
+                $view = new AddProductDoc($this -> model);
                 break;
         }
         $view -> show();

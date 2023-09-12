@@ -33,6 +33,12 @@ class PageModel{
         }
         return $conn;
     }
+    public function TestInput($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
     public function GetRequestedPage(){
         $this -> isPost = ($_SERVER['REQUEST_METHOD'] =='POST'); 
         if ($this -> isPost){
@@ -65,6 +71,9 @@ class PageModel{
             $this -> menu['shoppingcart'] = $this -> Menuitem('shoppingcart', 'Shoppingcart');
             $this -> menu['changepassword'] = $this -> Menuitem('changepassword', 'ChangePassword');
             $this -> menu['logout'] = $this -> Menuitem('logout', 'Logout', $this -> sessionManager -> getLogInUsername());
+            if ($this -> sessionManager -> getLogInRole() == 'admin'){
+                $this -> menu['addproduct'] = $this -> Menuitem('addproduct', 'Addproduct');
+            }
         } else {
             $this -> menu['register'] = $this -> Menuitem('register', 'Register');
             $this -> menu['login'] = $this -> Menuitem('login', 'Login');

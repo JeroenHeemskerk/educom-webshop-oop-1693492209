@@ -230,14 +230,6 @@ class UserModel extends PageModel{
         mysqli_close($conn);
         }
     }
-
-    public function TestInput($data) {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
-    }
-
     public function authenticateUser(){
         $user = $this -> findUserByEmail($this -> email);
         $this -> name = $user['name'];
@@ -246,7 +238,7 @@ class UserModel extends PageModel{
 
     public function LoginUser(){
         $user = $this -> findUserByEmail($this -> email);
-        $this -> sessionManager -> LogInUserSession($user['name'], $user['id']);
+        $this -> sessionManager -> LogInUserSession($user['name'], $user['id'], $user['role']);
         $this -> genericErr = "Login successvol";
     }
     public function LogoutUser(){

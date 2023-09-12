@@ -1,8 +1,9 @@
 <?php
 class sessionManager{
-    public function LogInUserSession($name, $userId) {
+    public function LogInUserSession($name, $userId, $role) {
         $_SESSION['name'] = $name;
         $_SESSION['userId'] = $userId;
+        $_SESSION['role'] = $role;
     }
     public function LogoutUserSession() {
         session_unset();
@@ -20,6 +21,9 @@ class sessionManager{
     }
     public function getLogInUserId() {
         return $_SESSION['userId'];
+    }
+    public function getLogInRole() {
+        return $_SESSION['role'];
     }
     public function AddProductToCart($ProductId) {
         if(array_key_exists($ProductId, $this -> getCart())){

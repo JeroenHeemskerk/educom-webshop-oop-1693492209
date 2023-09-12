@@ -1,5 +1,75 @@
 <?php
 class ShopModel extends PageModel{
+    public $name = '';
+    public $description = '';
+    public $price = '';
+    public $filename = '';
+
+    public $nameErr = '';
+    public $descriptionErr = '';
+    public $priceErr = '';
+    public $filenameErr = '';
+
+    public $productvalid = false;
+    public $valid = false;
+
+
+    public function validateProduct(){
+        $this -> nameErr = $this -> descriptionErr = $this -> priceErr = "";
+        $this -> name = $this -> TestInput($this -> getPostVar('name'));
+        $this -> description = $this -> TestInput($this -> getPostVar('description'));
+        $this -> price = $this -> TestInput($this -> getPostVar('price'));
+        $this -> filename = $this -> TestInput($this -> getPostVar('filename'));
+        $productvalid = false;
+
+        // de foto lukt niet
+        // $target_dir = "Images/";
+        // $target_file = $target_dir . basename($this -> filename);
+        // $uploadOk = 1;
+        // $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            if (empty($this -> name)) {
+                $this -> nameErr = "naam is verplicht";
+            } else {
+                if (!ctype_alpha($this -> name)) {
+                    $this -> nameErr = "nummers in de naam zijn niet toegstaan";
+                }
+            }
+            if (empty($this -> description)) {
+                $this -> descriptionErr = "beschrijving is verplicht";
+            }
+            if (empty($this -> price)) {
+                $this -> priceErr = "prijs is verplicht";
+            }
+            if (empty($this -> filename)) {
+                $this -> filenameErr = "foto is verplicht";
+            }
+            if (empty($this -> nameErr) && empty($this -> descriptionErr) && empty($this -> priceErr) && empty($this -> filenameErr)) {
+                try {
+                    $this -> productvalid = true;
+                } catch(Exception $e){
+                    $this -> genericErr = 'sorry er is een technische storing4';
+                }
+            }
+        }
+    }
+    public function SaveProduct(){
+        $conn = $this -> ConnectDB();
+        try {
+            $name = $this -> name = $conn->real_escape_string($this -> name);
+            $description = $this -> description = $conn->real_escape_string($this -> description);
+            $price = $this -> price = $conn->real_escape_string($this -> price);
+            $filename = $this -> filename = $conn->real_escape_string($this -> filename);
+            $sql = "INSERT INTO products (name, description, price, filename)
+            VALUES ('$name','$description','$price', '$filename')";
+            if (mysqli_query($conn, $sql) === FALSE) {
+                throw new Exception("Het is niet gelukt om het in het database te zetten");
+            }
+        } finally {    
+        mysqli_close($conn);
+        }
+    }
     public function GetAllProducts(){
         $conn = $this -> ConnectDB();
         try {
