@@ -6,7 +6,9 @@ abstract class FormsDoc extends BasicDoc {
         $this -> showFormStart();
         $this -> showFormInput();
         $this -> showFormContent();
-        $this -> showFormSubmit();
+        if($this -> model -> valid == false){
+            $this -> showFormSubmit();
+        }
     }
     private function showFormStart(){
         echo '
