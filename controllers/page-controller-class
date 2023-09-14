@@ -3,6 +3,9 @@ include_once 'models/page-model-class';
 include_once 'models/user-model-class';
 include_once 'models/shop-model-class';
 
+include_once 'models/crud.php';
+include_once 'models/usercrud.php';
+
 class PageController{
     private $model;
     public $product;
@@ -96,10 +99,18 @@ class PageController{
                 } 
                 break;
             case 'logout':
+                //$usercrud = new usercrud($this -> model -> crud);
+                $this -> model = new crud($this -> model);
+                $this -> model -> testread();
                 $this -> model = new UserModel($this -> model);
-                $this -> model -> LogoutUser();
                 $this -> model -> setPage("home");
                 break;
+                //dit is de echte logout
+            // case 'logout':
+            //     $this -> model = new UserModel($this -> model);
+            //     $this -> model -> LogoutUser();
+            //     $this -> model -> setPage("home");
+            //     break;
             case 'addproduct':
                 $this -> model = new ShopModel($this -> model);
                 $this -> model -> validateProduct();

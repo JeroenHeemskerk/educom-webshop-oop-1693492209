@@ -31,6 +31,8 @@ class UserModel extends PageModel{
     public $loginvalid = false;
     public $valid = false;
 
+    private $usercrud;
+
     public function __construct($model){
         PARENT::__construct($model);
     }
