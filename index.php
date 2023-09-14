@@ -1,8 +1,12 @@
 <?php
 session_start();
 include_once 'controllers/page-controller-class';
+include_once 'factories/crud-factory.php';
+include_once 'factories/model-factory.php';
 $crud = new crud();
-$pagemodel = new PageModel(null, $crud);
-$pagecontroller = new PageController($pagemodel);
+$crudfactory = new crudfactory($crud);
+$modelfactory = new modelfactory($crudfactory);
+
+$pagecontroller = new PageController($modelfactory);
 $pagecontroller -> HandleRequests();
 ?>

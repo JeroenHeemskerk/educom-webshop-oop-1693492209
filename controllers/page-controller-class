@@ -14,8 +14,9 @@ class PageController{
     public $total;
     public $cartLines; 
 
-    public function __construct() {
-        $this -> model = new Pagemodel(NULL);
+    public function __construct($modelfactory) {
+        $this -> modelfactory = $modelfactory;
+        $this -> model = $this -> modelfactory -> getmodel('page');
     }
     public function HandleRequests(){
         $this -> GetRequest();
@@ -75,7 +76,8 @@ class PageController{
                 $this -> model -> ValidateContact();
                 break;
             case 'changepassword':
-                $this -> model = new UserModel($this -> model);
+                $usercrud = $this -> modelfactory -> crudfactory -> getcrud('usercrud');
+                $this -> model = new UserModel($this -> model, $usercrud);
                 $this -> model -> CheckPassword();
                 if($this -> model -> passwordvalid){
                     $this -> model -> UpdateUser($this -> model -> userId, $this -> model -> password);
@@ -83,7 +85,8 @@ class PageController{
                 }
                 break;
             case 'register':
-                $this -> model = new UserModel($this -> model);
+                $usercrud = $this -> modelfactory -> crudfactory -> getcrud('usercrud');
+                $this -> model = new UserModel($this -> model, $usercrud);
                 $this -> model -> CheckRegister();
                 if($this -> model -> registervalid){
                     $this -> model -> SaveUser();
@@ -91,7 +94,8 @@ class PageController{
                 }
                 break;
             case 'login':
-                $this -> model = new UserModel($this -> model);
+                $usercrud = $this -> modelfactory -> crudfactory -> getcrud('usercrud');
+                $this -> model = new UserModel($this -> model, $usercrud);
                 $this -> model -> validateLogin();
                 if($this -> model -> loginvalid){
                     $this -> model -> LoginUser();
@@ -99,18 +103,10 @@ class PageController{
                 } 
                 break;
             case 'logout':
-                //$usercrud = new usercrud($this -> model -> crud);
-                $this -> model = new crud($this -> model);
-                $this -> model -> testread();
                 $this -> model = new UserModel($this -> model);
+                $this -> model -> LogoutUser();
                 $this -> model -> setPage("home");
                 break;
-                //dit is de echte logout
-            // case 'logout':
-            //     $this -> model = new UserModel($this -> model);
-            //     $this -> model -> LogoutUser();
-            //     $this -> model -> setPage("home");
-            //     break;
             case 'addproduct':
                 $this -> model = new ShopModel($this -> model);
                 $this -> model -> validateProduct();

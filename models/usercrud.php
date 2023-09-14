@@ -2,9 +2,10 @@
 class usercrud {
     private $crud;
  
-    // public function __construct(crud $crud) {
-    //     $this -> crud = $crud;
-    // }
+    public function __construct(crud $crud) {
+        $this -> crud = $crud;
+        $this -> crud = $this -> crud;
+    }
     public function createUser($name, $email, $password){
         try {
             $sql = "INSERT INTO users (name, email, password)
@@ -36,10 +37,10 @@ class usercrud {
         }
         $conn = null;
     }
-    public function updateUser(){
+    public function UpdateUser($userId, $password){
         try {
-            $sql = "UPDATE users SET name = :name, email = :email WHERE id = :id";
-            $params = array(":name", ":email", ":id", "mary", "mary@example.com", 10);
+            $sql = "UPDATE users SET password = :password WHERE id = :id";
+            $params = array(":password", ":id", $password, $userId);
             $this -> crud -> updaterow($sql, $params);
         } catch(PDOException $e) {
             echo "Error: " . $e->getMessage();

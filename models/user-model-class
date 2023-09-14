@@ -33,8 +33,9 @@ class UserModel extends PageModel{
 
     private $usercrud;
 
-    public function __construct($model){
+    public function __construct($model, $usercrud = ''){
         PARENT::__construct($model);
+        $this -> usercrud = $usercrud;
     }
     public function CheckRegister() {
         $this -> nameErr = $this -> emailErr = $this -> passwordErr = 
@@ -68,7 +69,7 @@ class UserModel extends PageModel{
                     }
             if (empty($this -> nameErr) && empty($this -> emailErr) && empty($this -> passwordErr) && empty($this -> passwordcheckErr)) {
                 try {
-                    if($this -> FindUserByEmail($this -> email) == FALSE){
+                    if($user = $this -> usercrud -> readUserByEmail($this -> email) == FALSE){
                         $this -> registervalid = true;
                     }else {
                         $this -> emailErr = "de email bestaat al";
@@ -77,22 +78,6 @@ class UserModel extends PageModel{
                     $this -> genericErr = 'sorry er is een technische storing4';
                 }
             }
-        }
-    }
-
-    public function SaveUser(){
-        $conn = $this -> ConnectDB();
-        try {
-            $name = $this -> name = $conn->real_escape_string($this -> name);
-            $email = $this -> email = $conn->real_escape_string($this -> email);
-            $password = $this -> password = $conn->real_escape_string($this -> password);
-            $sql = "INSERT INTO users (name, email, password)
-            VALUES ('$name','$email','$password')";
-            if (mysqli_query($conn, $sql) === FALSE) {
-                throw new Exception("Het is niet gelukt om het in het database te zetten");
-            }
-        } finally {    
-        mysqli_close($conn);
         }
     }
 
@@ -113,8 +98,8 @@ class UserModel extends PageModel{
                         $this -> passwordErr = "wachtwoord hoort niet bij deze email";
                         break;
                     case RESULT_OK:
-                        $name = $userInfo["user"]["name"];
-                        $userId = $userInfo["user"]["id"];
+                        $name = $userInfo["user"] -> name;
+                        $userId = $userInfo["user"] -> id;
                         $this -> loginvalid = true;
                         break;
                     default: 
@@ -165,88 +150,7 @@ class UserModel extends PageModel{
             }
         }
     }
-    public function AuthorizeUserByUserId($userId, $password){
-        $user = $this -> FindUserByUserId($userId);
-        return $this -> AuthorizeUser($user, $password);
-    }
-    public function FindUserByUserId($userId){
-        $conn = $this -> ConnectDB();
-        try {
-            $userId = $conn->real_escape_string($userId);
-            $sql = "SELECT * FROM users WHERE id='$userId'";
-            $result = mysqli_query($conn, $sql);
-            if (!$result) {
-                throw new Exception("Finding User failed, SQL: " . $sql . ", Error " . $conn->error());
-            }
-            return $result->fetch_assoc();
-        } finally {
-        mysqli_close($conn);
-        }
-    }
-    public function GetUser(){
-        $userId = $this -> sessionManager -> getLogInUserId();
-        $password = $this -> sessionManager -> getLogInPassword();
-        return array ($userId, $password);
-    }
 
-    public function UpdateUser($userId, $password){
-        $conn = $this -> ConnectDB();
-        try {
-            $password = $conn->real_escape_string($password);
-            $userId = $conn->real_escape_string($userId);
-            $sql = "UPDATE users SET password='$password' WHERE id='$userId'";
-            if (mysqli_query($conn, $sql) === FALSE) {
-                throw new Exception("Het is niet gelukt om het in het database te zetten");
-            }
-        } finally {    
-        mysqli_close($conn);
-        }
-    }
-
-    public function AuthorizeUserByEmail($email, $password){
-        $user = $this -> FindUserByEmail($email);
-        return $this -> AuthorizeUser($user, $password);
-    }
-    
-    public function AuthorizeUser($user, $password){
-        if(empty($user)){
-            return ['result' => RESULT_UNKNOWN_USER]; 
-        }
-        if($password != $user['password']){
-            return ['result' => RESULT_WRONG_PASSWORD]; 
-        }
-        return ['result' => RESULT_OK, 'user' => $user]; 
-    }
-
-    public function FindUserByEmail($email){
-        $conn = $this -> ConnectDB();
-        try {
-            $email = $conn->real_escape_string($email);
-            $sql = "SELECT * FROM users WHERE email='$email'";
-            $result = mysqli_query($conn, $sql);
-            if (!$result) {
-                throw new Exception("Finding User failed, SQL: " . $sql . ", Error " . $conn->error());
-            }
-            return $result->fetch_assoc();
-        } finally {
-        mysqli_close($conn);
-        }
-    }
-    public function authenticateUser(){
-        $user = $this -> findUserByEmail($this -> email);
-        $this -> name = $user['name'];
-        $this -> userId = $user['id'];
-    }
-
-    public function LoginUser(){
-        $user = $this -> findUserByEmail($this -> email);
-        $this -> sessionManager -> LogInUserSession($user['name'], $user['id'], $user['role']);
-        $this -> genericErr = "Login successvol";
-    }
-    public function LogoutUser(){
-        $this -> sessionManager -> LogoutUserSession();
-        $this -> genericErr = "Logout successvol";
-    }
     public function ValidateContact() {
         $this -> firstnameErr = $this -> lastnameErr = $this -> emailErr = $this -> phoneErr = 
         $this -> comprefErr = $this -> feedbackErr = $this -> prefErr = $this -> genericErr = "";
@@ -299,5 +203,55 @@ class UserModel extends PageModel{
                 $this -> valid = true;
             }
         }
+    }
+
+    public function SaveUser(){
+        $this -> usercrud -> createUser($this -> name, $this -> email, $this -> password);
+    }
+
+    public function GetUser(){
+        $userId = $this -> sessionManager -> getLogInUserId();
+        $password = $this -> sessionManager -> getLogInPassword();
+        return array ($userId, $password);
+    }
+
+    public function UpdateUser($userId, $password){
+        $this -> usercrud -> UpdateUser($userId, $password);
+    }
+
+    public function AuthorizeUserByUserId($userId, $password){
+        $user = $this -> usercrud -> readUserByUserId($userId);
+        return $this -> AuthorizeUser($user, $password);
+    }
+
+    public function AuthorizeUserByEmail($email, $password){
+        $user = $this -> usercrud -> readUserByEmail($email);
+        return $this -> AuthorizeUser($user, $password);
+    }
+    
+    public function AuthorizeUser($user, $password){
+        if(empty($user)){
+            return ['result' => RESULT_UNKNOWN_USER]; 
+        }
+        if($password != $user -> password){
+            return ['result' => RESULT_WRONG_PASSWORD]; 
+        }
+        return ['result' => RESULT_OK, 'user' => $user]; 
+    }
+
+    public function authenticateUser(){
+        $user[] = $this -> usercrud -> readUserByEmail($this -> email);
+        $this -> name = $user[0] -> name;
+        $this -> userId = $user[0] -> id;
+    }
+
+    public function LoginUser(){
+        $user[] = $this -> usercrud -> readUserByEmail($this -> email);
+        $this -> sessionManager -> LogInUserSession($user[0] -> name, $user[0] -> id, $user[0] -> role);
+        $this -> genericErr = "Login successvol";
+    }
+    public function LogoutUser(){
+        $this -> sessionManager -> LogoutUserSession();
+        $this -> genericErr = "Logout successvol";
     }
 }
