@@ -13,10 +13,13 @@ class crud {
     public function createrow($sql, $params){
         $conn = $this -> connection();
 
+        $NumOfParams = count($params);
+        $loops = $NumOfParams / 2 ;
+
         $stmt = $conn->prepare($sql);
-        $stmt -> bindParam($params[0], $params[3]);
-        $stmt -> bindParam($params[1], $params[4]);
-        $stmt -> bindParam($params[2], $params[5]);
+        for($i = 0; $i < $loops; $i++){
+            $stmt -> bindParam($params[$i], $params[$i + $loops]);
+        }
         $stmt -> execute();
     }
     public function readOneRow($sql, $params){
@@ -30,11 +33,10 @@ class crud {
         $result = $stmt -> fetch();
         return $result;
     }
-    public function readMultipleRows ($sql, $params){
+    public function readMultipleRows($sql){
         $conn = $this -> connection();
 
         $stmt = $conn->prepare($sql);
-        $stmt -> bindParam($params[0], $params[1]);
         $stmt -> setFetchMode(PDO::FETCH_OBJ);
         $stmt -> execute();
         

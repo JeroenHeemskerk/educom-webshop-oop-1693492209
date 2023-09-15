@@ -5,6 +5,7 @@ include_once 'models/shop-model-class';
 
 include_once 'models/crud.php';
 include_once 'models/usercrud.php';
+include_once 'models/shopcrud.php';
 
 class PageController{
     private $model;
@@ -29,20 +30,24 @@ class PageController{
     private function ProcessRequest(){
         switch ($this -> model -> page){
             case 'shoppingcart':
-                $this -> model = new ShopModel($this -> model);
+                $shopcrud = $this -> modelfactory -> crudfactory -> getcrud('shopcrud');
+                $this -> model = new ShopModel($this -> model, $shopcrud);
                 $this -> model -> handleActions();
                 $this -> carts = $this -> model -> requestCart();
                 foreach ($this -> carts as $key => $quantity) {
                     $product = $this -> model -> GetProductById($key); 
-                    $this -> cartLine = array("id" => $product["id"], "name" => $product["name"], "quantity" => $quantity, "price" => $product["price"], "description" => $product["description"], "filename" => $product["filename"], 'subTotal' => ($quantity * $product['price']));
+                    $this -> cartLine = array("id" => $product -> id, "name" => $product -> name, "quantity" => $quantity, 
+                    "price" => $product -> price, "description" => $product -> description, "filename" => $product -> filename, 
+                    'subTotal' => ($quantity * $product -> price));
                     $this -> model -> cartLines[] = $this -> cartLine;
                     $this -> model -> total += $this -> cartLine['subTotal'];
                 }
                 break;
             case 'top5':
-                $this -> model = new ShopModel($this -> model);
+                $shopcrud = $this -> modelfactory -> crudfactory -> getcrud('shopcrud');
+                $this -> model = new ShopModel($this -> model, $shopcrud);
                 try {
-                    $this -> carts = $this -> model -> GetTop5Products();
+                    $this -> model -> carts = $this -> model -> GetTop5Products();
                 } 
                 catch (Exception $e) {
                     $this -> model -> genericErr = "Kan de top 5 producten niet ophalen, probeer het later nogmaals";
@@ -50,9 +55,10 @@ class PageController{
                 }
                 break;
             case 'webshop':
-                $this -> model = new ShopModel($this -> model);
+                $shopcrud = $this -> modelfactory -> crudfactory -> getcrud('shopcrud');
+                $this -> model = new ShopModel($this -> model, $shopcrud);
                 try {
-                    $this -> products = $this -> model -> GetAllProducts();
+                    $this -> model -> products = $this -> model -> GetAllProducts();
                 } 
                 catch (Exception $e) {
                     $this -> model -> genericErr = "Kan de producten niet ophalen, probeer het later nogmaals";
@@ -61,10 +67,11 @@ class PageController{
                 $this -> model -> handleActions();
                 break;
             case 'webshopitem':
-                $this -> model = new ShopModel($this -> model);
+                $shopcrud = $this -> modelfactory -> crudfactory -> getcrud('shopcrud');
+                $this -> model = new ShopModel($this -> model, $shopcrud);
                 try {
                     $productId = $this -> model -> GetUrlVar("row"); 
-                    $this -> product = $this ->  model -> GetProductById($productId); 
+                    $this -> model -> product = $this -> model -> GetProductById($productId); 
                 } 
                 catch (Exception $e) {
                     $this -> model -> genericErr = "Kan dit product niet ophalen, probeer het later nogmaals";

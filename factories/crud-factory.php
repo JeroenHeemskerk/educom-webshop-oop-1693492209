@@ -9,6 +9,9 @@ class crudfactory{
             case 'usercrud':
                 return $this -> model = new usercrud($this -> crud);
                 break;
+            case 'shopcrud':
+                return $this -> model = new shopcrud($this -> crud);
+                break;
         }
     }
 }
