@@ -4,7 +4,6 @@ class shopcrud {
  
     public function __construct(crud $crud) {
         $this -> crud = $crud;
-        $this -> crud = $this -> crud;
     }
     public function createProduct($name, $description, $price, $filename){
         try {

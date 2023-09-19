@@ -4,7 +4,6 @@ class usercrud {
  
     public function __construct(crud $crud) {
         $this -> crud = $crud;
-        $this -> crud = $this -> crud;
     }
     public function createUser($name, $email, $password){
         try {
