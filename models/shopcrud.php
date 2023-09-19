@@ -9,7 +9,7 @@ class shopcrud {
         try {
             $sql = "INSERT INTO products (name, description, price, filename)
             VALUES (:name, :description, :price, :filename)";
-            $params = array(":userid", ":description", ":price", ":filename", $userid, $description, $price, $filename);
+            $params = array("userid" => $userid, "description" => $description, "price" => $price, "filename" => $filename);
             $this -> crud -> createrow($sql, $params);
         } catch(PDOException $e) {
             echo "Error: " . $e->getMessage();
@@ -19,7 +19,7 @@ class shopcrud {
     public function createOrder($userid, $productid){
         try {
             $sql = "INSERT INTO shoppingcart (userid, productid) VALUES (:userid, :productid)";
-            $params = array(":userid", ":productid", $userid, $productid);
+            $params = array("userid" => $userid, "productid" => $productid);
             $this -> crud -> createrow($sql, $params);
         } catch(PDOException $e) {
             echo "Error: " . $e->getMessage();
@@ -50,7 +50,7 @@ class shopcrud {
     public function readProductByProductId($productid){
         try {
             $sql = "SELECT * FROM products WHERE id = :id";
-            $params = array(":id", $productid);
+            $params = array("id" => $productid);
             return $this -> crud -> readOneRow($sql, $params);
         } catch(PDOException $e) {
             echo "Error: " . $e->getMessage();

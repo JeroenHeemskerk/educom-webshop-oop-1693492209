@@ -1,6 +1,6 @@
 <?php
 class crud {
-    public function connection(){
+    private function connection(){
         $servername = "localhost";
         $username = "stijn_webshop_educom";
         //super goed wachtwoord ik weet
@@ -10,52 +10,33 @@ class crud {
         $conn -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $conn;
     }
-    public function createrow($sql, $params){
-        $conn = $this -> connection();
-
-        $NumOfParams = count($params);
-        $loops = $NumOfParams / 2 ;
-
-        $stmt = $conn->prepare($sql);
-        for($i = 0; $i < $loops; $i++){
-            $stmt -> bindParam($params[$i], $params[$i + $loops]);
+    private function prepareBindAndExecute($sql, $params = '') {
+        $this -> conn = $this -> connection(); 
+        $stmt = $this -> conn -> prepare($sql); 
+        if(!empty($params)){
+            foreach($params as $key => $value){ 
+                $stmt -> bindValue(":".$key, $value); 
+            } 
         }
+        $stmt -> setFetchMode(PDO::FETCH_OBJ);
         $stmt -> execute();
+        return $stmt; 
+    }
+    public function createrow($sql, $params){
+        $this -> prepareBindAndExecute($sql, $params);
     }
     public function readOneRow($sql, $params){
-        $conn = $this -> connection();
-
-        $stmt = $conn->prepare($sql);
-        $stmt -> bindParam($params[0], $params[1]);
-        $stmt -> setFetchMode(PDO::FETCH_OBJ);
-        $stmt -> execute();
-        
-        $result = $stmt -> fetch();
-        return $result;
+        $stmt = $this -> prepareBindAndExecute($sql, $params);
+        return $stmt -> fetch();
     }
     public function readMultipleRows($sql){
-        $conn = $this -> connection();
-
-        $stmt = $conn->prepare($sql);
-        $stmt -> setFetchMode(PDO::FETCH_OBJ);
-        $stmt -> execute();
-        
-        $result = $stmt -> fetchAll();
-        return $result;
+        $stmt = $this -> prepareBindAndExecute($sql);
+        return $stmt -> fetchAll();
     }
     public function updaterow($sql, $params){
-        $conn = $this -> connection();
-
-        $stmt = $conn->prepare($sql);
-        $stmt -> bindParam($params[0], $params[2]);
-        $stmt -> bindParam($params[1], $params[3]);
-        $stmt -> execute();
+        $this -> prepareBindAndExecute($sql, $params);
     }
     public function deleterow($sql, $params){
-        $conn = $this -> connection();
-
-        $stmt = $conn->prepare($sql);
-        $stmt -> bindParam($params[0], $params[1]);
-        $stmt -> execute();
+        $this -> prepareBindAndExecute($sql, $params);
     }
 }
