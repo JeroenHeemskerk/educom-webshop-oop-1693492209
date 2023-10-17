@@ -1,4 +1,7 @@
 <?php
 interface ishopcrud {    
-    public function getAllProducts();  
+    public function readProductByProductId();  
+    public function readAllProducts();
+    public function readTop5Products();
+    public function createOrder();
 }

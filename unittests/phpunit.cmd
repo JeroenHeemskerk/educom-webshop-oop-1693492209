@@ -1,1 +1,1 @@
-php c:\bin\phpunit.phar %
+php c:\bin\phpunit.phar %*

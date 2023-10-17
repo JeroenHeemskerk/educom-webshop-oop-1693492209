@@ -4,7 +4,6 @@ class PageModel{
     public $page;
     public $newpage;
     public $menu;
-    public $errors = array();
     public $genericErr = "";
     protected $isPost;
     protected $sessionManager;
@@ -13,7 +12,7 @@ class PageModel{
         if(empty($copy)){
             $this -> sessionManager = new sessionManager();
         }else {
-            $this -> sessionManager = new sessionManager();
+            $this -> sessionManager = $copy -> sessionManager;
             $this -> page = $copy -> page;
             $this -> newpage = $copy -> newpage;
             $this -> isPost = $copy -> isPost;
